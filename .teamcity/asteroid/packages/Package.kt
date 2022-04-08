@@ -3,6 +3,7 @@ package asteroid.packages
 import asteroid.*
 import jetbrains.buildServer.configs.kotlin.v2019_2.BuildType
 import jetbrains.buildServer.configs.kotlin.v2019_2.Project
+import jetbrains.buildServer.configs.kotlin.v2019_2.PublishMode
 import jetbrains.buildServer.configs.kotlin.v2019_2.buildFeatures.PullRequests
 import jetbrains.buildServer.configs.kotlin.v2019_2.buildFeatures.commitStatusPublisher
 import jetbrains.buildServer.configs.kotlin.v2019_2.buildFeatures.pullRequests
@@ -43,6 +44,11 @@ open class BuildPackage(pkg: String, recipeVCS: GitVcsRoot, recipe: String = pkg
 	id("Packages_AsteroidApps_${recipe.filter { it.isLetterOrDigit() }}_BuildPackage")
 	name = "Build Package"
 	description = "Build a specific recipe"
+
+	artifactRules = """
+		+:build/tmp-glibc/deploy/ipks/armv7vehf-neon/${recipe}*.ipk
+	""".trimIndent()
+	publishArtifacts = PublishMode.SUCCESSFUL
 
 	vcs {
 		CoreVCS.attachVCS(this, true)
