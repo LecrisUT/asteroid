@@ -16,7 +16,7 @@
 
 declare -a devices=("anthias" "bass" "catfish" "dory" "firefish" "harmony" "inharmony" "lenok" "mooneye" "narwhal" "qemux86" "ray" "smelt" "sparrow" "sprat" "sturgeon" "sawfish" "skipjack" "swift" "tetra" "wren")
 declare -a architectures=("armv7vehf-neon")
-declare -a sstate_server="https://sstate.asteroidos.org"
+declare -a sstate_server="https://asteroidos.lecris.dev"
 
 function printNoDeviceInfo {
     echo "Usage:"

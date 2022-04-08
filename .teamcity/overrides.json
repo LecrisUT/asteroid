@@ -19,7 +19,7 @@
   "coreVCS": {
     "Asteroid": {
       "url": "https://github.com/LecrisUT/AsteroidOS",
-      "branch": "add-CI"
+      "branch": "CI-test"
     }
   }
 }
