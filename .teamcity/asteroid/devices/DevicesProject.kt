@@ -172,8 +172,10 @@ object BuildAll : BuildType({
 			}
 			triggerRules = """
 				+:root=${CoreVCS.MetaOpenEmbedded.id}:/**
-				-:root=${CoreVCS.MetaAsteroid.id}:/**
-				-:root=${DevicesProject.vcs.id}:/**
+				+:root=${CoreVCS.MetaQt5.id}:/**
+				+:root=${CoreVCS.MetaSmartphone.id}:/**
+				+:root=${CoreVCS.OpenEmbeddedCore.id}:/**
+				+:root=${CoreVCS.Bitbake.id}:/**
 			""".trimIndent()
 			branchFilter = "+:<default>"
 		}
@@ -183,8 +185,7 @@ object BuildAll : BuildType({
 			triggerRules = """
 				+:/**
 				-:root=${DevicesProject.vcs.id}:/**
-				+:root=${CoreVCS.MetaAsteroid.id};comment=^(?!\[NoBuild\]:).+:/**
-				-:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid-apps/*
+				-:root=${CoreVCS.MetaAsteroid.id}:/**
 			""".trimIndent()
 
 			branchFilter = "+:<default>"
@@ -192,7 +193,6 @@ object BuildAll : BuildType({
 		vcs {
 			watchChangesInDependencies = true
 			triggerRules = """
-				-:root=${DevicesProject.vcs.id}:/**
 				+:root=${CoreVCS.MetaAsteroid.id};comment=^(?!\[NoBuild\]:).+:/**
 				-:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid-apps/*
 			""".trimIndent()
@@ -205,7 +205,6 @@ object BuildAll : BuildType({
 		vcs {
 			triggerRules = """
 				+:root=${CoreVCS.Asteroid.id}:/.teamcity/*
-				-:root=${CoreVCS.Asteroid.id}:/.teamcity/*/**
 				+:root=${CoreVCS.Asteroid.id}:/.teamcity/devices/**
 			""".trimIndent()
 
@@ -235,6 +234,7 @@ object BuildAll : BuildType({
 			gitChecker = GitAPIChecker.Create(CoreVCS.Asteroid.url!!, Settings.GithubTokenID)
 			if (gitChecker?.checkPR() == true)
 				pullRequests {
+					enabled = false
 					vcsRootExtId = "${CoreVCS.Asteroid.id}"
 					when (gitChecker!!.hubType) {
 						GitRepoHubType.Github -> {
@@ -268,6 +268,7 @@ object BuildAll : BuildType({
 			gitChecker = GitAPIChecker.Create(CoreVCS.Asteroid.url!!, Settings.GithubTokenID)
 			if (gitChecker?.checkCommitStatus() == true)
 				commitStatusPublisher {
+					enabled = false
 					vcsRootExtId = "${CoreVCS.Asteroid.id}"
 					when (gitChecker!!.hubType) {
 						GitRepoHubType.Github -> {
