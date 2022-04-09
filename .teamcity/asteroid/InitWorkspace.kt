@@ -173,6 +173,8 @@ fun updateSstate(buildStep: ScriptBuildStep, cleanServer: Boolean = false) {
 		rsync ${'$'}{Opts} \
 			--include '*/' --include '*:*:*:*:*:allarch:*' --exclude '*' \
 			build/sstate-cache ${'$'}{ServerAddr}/allarch
+		rsync ${'$'}{Opts} \
+			build/sstate-cache ${'$'}{ServerAddr}/others/sturgeon
 		""".trimIndent()
 }
 
@@ -190,13 +192,15 @@ fun updateSstate(buildStep: ScriptBuildStep, device: String, architecture: Strin
 			build/sstate-cache ${'$'}{ServerAddr}/other-sstate
 		rsync ${'$'}{Opts} \
 			${if (cleanServer) "--delete" else ""} \
-			--include '*/' --include '*:*:*:*:*:${device}:*' --exclude '*' \
-			build/sstate-cache ${'$'}{ServerAddr}/${device}
+			--include '*/' --include '*:*:*:*:*:$device:*' --exclude '*' \
+			build/sstate-cache ${'$'}{ServerAddr}/$device
 		rsync ${'$'}{Opts} \
-			--include '*/' --include '*:*:*:*:*:${architecture}:*' --exclude '*' \
-			build/sstate-cache ${'$'}{ServerAddr}/${architecture}
+			--include '*/' --include '*:*:*:*:*:$architecture:*' --exclude '*' \
+			build/sstate-cache ${'$'}{ServerAddr}/$architecture
 		rsync ${'$'}{Opts} \
 			--include '*/' --include '*:*:*:*:*:allarch:*' --exclude '*' \
 			build/sstate-cache ${'$'}{ServerAddr}/allarch
+		rsync ${'$'}{Opts} \
+			build/sstate-cache ${'$'}{ServerAddr}/others/$device
 		""".trimIndent()
 }
