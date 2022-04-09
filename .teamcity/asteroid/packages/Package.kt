@@ -31,7 +31,7 @@ class PackageProject(val pkg: String, coreApp: Boolean = true) : Project({
 			gitBase = "https://github.com/"
 			url = "${Settings.fork}/$gitName.git"
 			fallback_url = "${Settings.upstream}/$gitName.git"
-			this.branch = "refs/heads/($branch)"
+			this.branch = branch
 		}
 		buildPackage = BuildPackage(pkg, recipeVCS, recipe, coreApp)
 		buildPackage.vcs.root(recipeVCS, "+:.=>src/$gitName")

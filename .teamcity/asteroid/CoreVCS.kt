@@ -25,11 +25,8 @@ object CoreVCS : CoreVCSDefault() {
 }
 
 fun checkVcsOverride(vcs: GitVcsRoot, json: JSONObject) {
-	val branchRegex = "\\((.*?)\\)".toRegex()
-	val branch = json.optString("branch", branchRegex.find(vcs.branch!!)!!.value)
-	val url = json.optString("url", vcs.url)
-	vcs.branch = "refs/heads/($branch)"
-	vcs.url = url
+	vcs.branch = json.optString("branch", vcs.branch)
+	vcs.url = json.optString("url", vcs.url)
 }
 
 open class CoreVCSDefault {
@@ -62,37 +59,37 @@ open class CoreVCSDefault {
 			gitBase = "https://github.com/"
 			url = "${Settings.fork}/asteroid.git"
 			fallback_url = "${Settings.upstream}/asteroid.git"
-			branch = "refs/heads/(master)"
+			branch = "master"
 		}
 		OpenEmbeddedCore = GitVcsRoot {
 			id("OpenEmbeddedVCS")
 			name = "OpenEmbedded Core"
 			url = "https://github.com/openembedded/openembedded-core.git"
-			branch = "refs/heads/(honister)"
+			branch = "honister"
 		}
 		Bitbake = GitVcsRoot {
 			id("BitBakeVCS")
 			name = "Bitbake"
 			url = "https://github.com/openembedded/bitbake.git"
-			branch = "refs/heads/(1.52)"
+			branch = "1.52"
 		}
 		MetaOpenEmbedded = GitVcsRoot {
 			id("MetaOpenEmbeddedVCS")
 			name = "Meta OpenEmbedded"
 			url = "https://github.com/openembedded/meta-openembedded.git"
-			branch = "refs/heads/(honister)"
+			branch = "honister"
 		}
 		MetaQt5 = GitVcsRoot {
 			id("MetaQt5VCS")
 			name = "Meta Qt5"
 			url = "https://github.com/meta-qt5/meta-qt5"
-			branch = "refs/heads/(master)"
+			branch = "honister"
 		}
 		MetaSmartphone = GitVcsRoot {
 			id("MetaSmartphoneVCS")
 			name = "Meta Smartphone"
 			url = "https://github.com/shr-distribution/meta-smartphone"
-			branch = "refs/heads/(honister)"
+			branch = "honister"
 		}
 		MetaAsteroid = GitVcsRoot_fallback {
 			id("MetaAsteroidVCS")
@@ -100,7 +97,7 @@ open class CoreVCSDefault {
 			gitBase = "https://github.com/"
 			url = "${Settings.fork}/meta-asteroid"
 			fallback_url = "${Settings.upstream}/meta-asteroid"
-			branch = "refs/heads/(master)"
+			branch = "master"
 		}
 	}
 	val allVcs = listOf<GitVcsRoot>(

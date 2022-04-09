@@ -35,7 +35,7 @@ object DevicesProject : Project({
 		gitBase = "https://github.com/"
 		url = "${Settings.fork}/meta-smartwatch.git"
 		fallback_url = "${Settings.upstream}/meta-smartwatch.git"
-		branch = "refs/heads/(master)"
+		branch = "master"
 	}
 	val devices: List<DeviceProject> = Settings.devices.map { DeviceProject(it) }
 
