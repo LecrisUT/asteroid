@@ -46,7 +46,7 @@ open class BuildPackage(pkg: String, recipeVCS: GitVcsRoot, recipe: String = pkg
 	description = "Build a specific recipe"
 
 	artifactRules = """
-		+:build/tmp-glibc/deploy/ipks/armv7vehf-neon/${recipe}*.ipk
+		+:build/tmp-glibc/deploy/ipks/*/${recipe}*.ipk
 	""".trimIndent()
 	publishArtifacts = PublishMode.SUCCESSFUL
 

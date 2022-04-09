@@ -20,16 +20,16 @@ fun initScript(buildStep: ScriptBuildStep, withSstate: Boolean = true) {
 	val sstateMirror: String = if (withSstate)
 		"""
 			SSTATE_MIRRORS ?= " \\
-			  file://.* %system.sstate.server.address%/sturgeon/sstate-cache/PATH;downloadfilename=PATH \\n \\
-			  file://.* %system.sstate.server.address%/armv7vehf-neon/sstate-cache/PATH;downloadfilename=PATH \\n \\
-			  file://.* %system.sstate.server.address%/allarch/sstate-cache/PATH;downloadfilename=PATH \\n \\
-			  file://.* %system.sstate.server.address%/other-sstate/sstate-cache/PATH;downloadfilename=PATH \\n \\
+			  file://.* %system.sstate.server.address%/sturgeon/sstate-cache/PATH;downloadfilename=PATH \\
+			  file://.* %system.sstate.server.address%/armv7vehf-neon/sstate-cache/PATH;downloadfilename=PATH \\
+			  file://.* %system.sstate.server.address%/allarch/sstate-cache/PATH;downloadfilename=PATH \\
+			  file://.* %system.sstate.server.address%/other-sstate/sstate-cache/PATH;downloadfilename=PATH \\
 			"
 		""".trimStart().trimEnd()
 	else
 		"""
 			SSTATE_MIRRORS ?= " \\
-			  file://.* %system.sstate.server.address%/other-sstate/sstate-cache/PATH;downloadfilename=PATH \\n \\
+			  file://.* %system.sstate.server.address%/other-sstate/sstate-cache/PATH;downloadfilename=PATH \\
 			"
 		""".trimStart().trimEnd()
 	buildStep.scriptContent = """
@@ -38,6 +38,13 @@ fun initScript(buildStep: ScriptBuildStep, withSstate: Boolean = true) {
 			DISTRO = "asteroid"
 			MACHINE = "sturgeon"
 			PACKAGE_CLASSES = "package_ipk"
+			SRCDIR = "\${'$'}{@os.path.abspath(os.path.join("\${'$'}{TOPDIR}", "../src/"))}"
+			PREMIRROR = " \\
+			  git://.*/.*   file://\${'$'}{SRCDIR} \\
+			  ftp://.*/.*   file://\${'$'}{SRCDIR} \\
+			  http://.*/.*  file://\${'$'}{SRCDIR} \\
+			  https://.*/.* file://\${'$'}{SRCDIR} \\
+			"
 			$sstateMirror
 		EOF
 		cat > build/conf/bblayers.conf <<-EOF
@@ -75,16 +82,16 @@ fun initScript(
 	val sstateMirror: String = if (withSstate)
 		"""
 			SSTATE_MIRRORS ?= " \\
-			  file://.* %system.sstate.server.address%/${device}/sstate-cache/PATH;downloadfilename=PATH \\n \\
-			  file://.* %system.sstate.server.address%/${architecture}/sstate-cache/PATH;downloadfilename=PATH \\n \\
-			  file://.* %system.sstate.server.address%/allarch/sstate-cache/PATH;downloadfilename=PATH \\n \\
-			  file://.* %system.sstate.server.address%/other-sstate/sstate-cache/PATH;downloadfilename=PATH \\n \\
+			  file://.* %system.sstate.server.address%/${device}/sstate-cache/PATH;downloadfilename=PATH \\
+			  file://.* %system.sstate.server.address%/${architecture}/sstate-cache/PATH;downloadfilename=PATH \\
+			  file://.* %system.sstate.server.address%/allarch/sstate-cache/PATH;downloadfilename=PATH \\
+			  file://.* %system.sstate.server.address%/other-sstate/sstate-cache/PATH;downloadfilename=PATH \\
 			"
 		""".trimStart().trimEnd()
 	else
 		"""
 			SSTATE_MIRRORS ?= " \\
-			  file://.* %system.sstate.server.address%/other-sstate/sstate-cache/PATH;downloadfilename=PATH \\n \\
+			  file://.* %system.sstate.server.address%/other-sstate/sstate-cache/PATH;downloadfilename=PATH \\
 			"
 		""".trimStart().trimEnd()
 	buildStep.scriptContent = """
@@ -93,6 +100,13 @@ fun initScript(
 			DISTRO = "asteroid"
 			MACHINE = "$device"
 			PACKAGE_CLASSES = "package_ipk"
+			SRCDIR = "\${'$'}{@os.path.abspath(os.path.join("\${'$'}{TOPDIR}", "../src/"))}"
+			PREMIRROR = " \\
+			  git://.*/.*   file://\${'$'}{SRCDIR} \\
+			  ftp://.*/.*   file://\${'$'}{SRCDIR} \\
+			  http://.*/.*  file://\${'$'}{SRCDIR} \\
+			  https://.*/.* file://\${'$'}{SRCDIR} \\
+			"
 			$sstateMirror
 		EOF
 		cat > build/conf/bblayers.conf <<-EOF

@@ -41,8 +41,8 @@ open class BuildImage(device: String, architecture: String, meta: String = devic
 	description = "Build Asteroid image for $device with latest sstate-cache"
 
 	artifactRules = """
-		+:build/tmp-glibc/deploy/images/${device}/asteroid-image-${device}*.ext4
-		+:build/tmp-glibc/deploy/images/${device}/zImage-dtb-${device}*.fastboot
+		+:build/tmp-glibc/deploy/images/${device}/asteroid-image-${device}%system.image.dev-suffix%.ext4
+		+:build/tmp-glibc/deploy/images/${device}/zImage-dtb-${device}%system.image.dev-suffix%.fastboot
 	""".trimIndent()
 	publishArtifacts = PublishMode.SUCCESSFUL
 

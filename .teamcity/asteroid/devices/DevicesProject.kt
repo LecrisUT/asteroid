@@ -10,6 +10,7 @@ import jetbrains.buildServer.configs.kotlin.v2019_2.buildFeatures.pullRequests
 import jetbrains.buildServer.configs.kotlin.v2019_2.buildFeatures.sshAgent
 import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.script
 import jetbrains.buildServer.configs.kotlin.v2019_2.sequential
+import jetbrains.buildServer.configs.kotlin.v2019_2.triggers.ScheduleTrigger
 import jetbrains.buildServer.configs.kotlin.v2019_2.triggers.schedule
 import jetbrains.buildServer.configs.kotlin.v2019_2.triggers.vcs
 import jetbrains.buildServer.configs.kotlin.v2019_2.vcs.GitVcsRoot
@@ -157,6 +158,7 @@ object BuildAll : BuildType({
 	id("Devices_BuildAll")
 	name = "Build all devices"
 	description = "Build Asteroid image for all devices with latest sstate-cache"
+	type = Type.DEPLOYMENT
 
 	vcs {
 		root(CoreVCS.Asteroid)
@@ -164,11 +166,32 @@ object BuildAll : BuildType({
 	}
 
 	triggers {
+		schedule {
+			weekly{
+				dayOfWeek = ScheduleTrigger.DAY.Sunday
+			}
+			triggerRules = """
+				+:root=${CoreVCS.MetaOpenEmbedded.id}:/**
+				-:root=${CoreVCS.MetaAsteroid.id}:/**
+				-:root=${DevicesProject.vcs.id}:/**
+			""".trimIndent()
+			branchFilter = "+:<default>"
+		}
 		vcs {
-			// TODO: Add quiet period
+			enabled = false
 			watchChangesInDependencies = true
 			triggerRules = """
 				+:/**
+				-:root=${DevicesProject.vcs.id}:/**
+				+:root=${CoreVCS.MetaAsteroid.id};comment=^(?!\[NoBuild\]:).+:/**
+				-:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid-apps/*
+			""".trimIndent()
+
+			branchFilter = "+:<default>"
+		}
+		vcs {
+			watchChangesInDependencies = true
+			triggerRules = """
 				-:root=${DevicesProject.vcs.id}:/**
 				+:root=${CoreVCS.MetaAsteroid.id};comment=^(?!\[NoBuild\]:).+:/**
 				-:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid-apps/*
