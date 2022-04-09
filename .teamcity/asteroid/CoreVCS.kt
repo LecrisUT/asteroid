@@ -3,6 +3,7 @@ package asteroid
 import asteroid.devices.DevicesProject
 import asteroid.packages.CommunityAppsProject
 import com.github.kittinunf.fuel.Fuel
+import jetbrains.buildServer.configs.kotlin.v2019_2.CheckoutMode
 import jetbrains.buildServer.configs.kotlin.v2019_2.VcsSettings
 import jetbrains.buildServer.configs.kotlin.v2019_2.vcs.GitVcsRoot
 import org.json.JSONObject
@@ -42,7 +43,7 @@ open class CoreVCSDefault {
 
 	fun attachVCS(init: VcsSettings, forDevice: Boolean = false) {
 		init.root(OpenEmbeddedCore, "+:.=>src/oe-core")
-		init.root(Bitbake, "+:.=>src/oe-core/bitbake")
+		init.root(Bitbake, "+:.=>src/bitbake")
 		init.root(MetaOpenEmbedded, "+:.=>src/meta-openembedded")
 		init.root(MetaQt5, "+:.=>src/meta-qt5")
 		init.root(MetaSmartphone, "+:.=>src/meta-smartphone")
@@ -50,6 +51,7 @@ open class CoreVCSDefault {
 		if (forDevice)
 			init.root(DevicesProject.vcs, "+:.=>src/meta-smartwatch")
 
+		init.checkoutMode = CheckoutMode.ON_AGENT
 		init.cleanCheckout = true
 	}
 
