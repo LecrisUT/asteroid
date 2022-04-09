@@ -172,7 +172,7 @@ fun updateSstate(buildStep: ScriptBuildStep, cleanServer: Boolean = false) {
 			build/sstate-cache ${'$'}{ServerAddr}/armv7vehf-neon
 		rsync ${'$'}{Opts} \
 			--include '*/' --include '*:*:*:*:*:allarch:*' --exclude '*' \
-			build/sstate-cache ${'$'}{ServerAddr}/all-arch
+			build/sstate-cache ${'$'}{ServerAddr}/allarch
 		""".trimIndent()
 }
 
@@ -197,6 +197,6 @@ fun updateSstate(buildStep: ScriptBuildStep, device: String, architecture: Strin
 			build/sstate-cache ${'$'}{ServerAddr}/${architecture}
 		rsync ${'$'}{Opts} \
 			--include '*/' --include '*:*:*:*:*:allarch:*' --exclude '*' \
-			build/sstate-cache ${'$'}{ServerAddr}/all-arch
+			build/sstate-cache ${'$'}{ServerAddr}/allarch
 		""".trimIndent()
 }
