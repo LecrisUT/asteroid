@@ -40,10 +40,7 @@ fun initScript(buildStep: ScriptBuildStep, withSstate: Boolean = true) {
 			PACKAGE_CLASSES = "package_ipk"
 			SRCDIR = "\${'$'}{@os.path.abspath(os.path.join("\${'$'}{TOPDIR}", "../src/"))}"
 			PREMIRROR = " \\
-			  git://.*/.*   file://\${'$'}{SRCDIR} \\
-			  ftp://.*/.*   file://\${'$'}{SRCDIR} \\
-			  http://.*/.*  file://\${'$'}{SRCDIR} \\
-			  https://.*/.* file://\${'$'}{SRCDIR} \\
+			  git://.*/.*/([^.]+).*   git://\${'$'}{SRCDIR}/\\1;protocol=file \\
 			"
 			$sstateMirror
 		EOF
@@ -102,10 +99,7 @@ fun initScript(
 			PACKAGE_CLASSES = "package_ipk"
 			SRCDIR = "\${'$'}{@os.path.abspath(os.path.join("\${'$'}{TOPDIR}", "../src/"))}"
 			PREMIRROR = " \\
-			  git://.*/.*   file://\${'$'}{SRCDIR} \\
-			  ftp://.*/.*   file://\${'$'}{SRCDIR} \\
-			  http://.*/.*  file://\${'$'}{SRCDIR} \\
-			  https://.*/.* file://\${'$'}{SRCDIR} \\
+			  git://.*/.*/([^.]+).*   git://\${'$'}{SRCDIR}/\\1;protocol=file \\
 			"
 			$sstateMirror
 		EOF
