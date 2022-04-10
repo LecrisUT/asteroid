@@ -39,7 +39,7 @@ fun initScript(buildStep: ScriptBuildStep, withSstate: Boolean = true) {
 			MACHINE = "sturgeon"
 			PACKAGE_CLASSES = "package_ipk"
 			SRCDIR = "\${'$'}{@os.path.abspath(os.path.join("\${'$'}{TOPDIR}", "../src/"))}"
-			PREMIRROR = " \\
+			PREMIRRORS:prepend = " \\
 			  git://.*/.*/([^.]+).*   git://\${'$'}{SRCDIR}/\\1;protocol=file \\
 			"
 			$sstateMirror
@@ -98,7 +98,7 @@ fun initScript(
 			MACHINE = "$device"
 			PACKAGE_CLASSES = "package_ipk"
 			SRCDIR = "\${'$'}{@os.path.abspath(os.path.join("\${'$'}{TOPDIR}", "../src/"))}"
-			PREMIRROR = " \\
+			PREMIRRORS:prepend = " \\
 			  git://.*/.*/([^.]+).*   git://\${'$'}{SRCDIR}/\\1;protocol=file \\
 			"
 			$sstateMirror
