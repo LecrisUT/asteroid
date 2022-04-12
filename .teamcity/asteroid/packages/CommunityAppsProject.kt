@@ -18,7 +18,7 @@ object CommunityAppsProject : Project({
 		gitBase = "https://github.com/"
 		url = "${Settings.fork}/asteroid.git"
 		fallback_url = "${Settings.upstream}/asteroid.git"
-		branch = "refs/heads/(master)"
+		branch = "master"
 	}
 
 	init {
