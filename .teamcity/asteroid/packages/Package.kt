@@ -22,9 +22,9 @@ class PackageProject(val pkg: String, coreApp: Boolean = true) : Project({
 
 	init {
 		val json = Settings.overrides?.optJSONObject("packages")?.optJSONObject(pkg)
-		val gitName = json?.optString("gitName") ?: pkg
-		val branch = json?.optString("branch") ?: "master"
-		recipe = json?.optString("recipe") ?: pkg
+		val gitName = json?.optString("gitName", null) ?: pkg
+		val branch = json?.optString("branch", null) ?: "master"
+		recipe = json?.optString("recipe", null) ?: pkg
 		recipeVCS = GitVcsRoot_fallback {
 			id("Packages_AsteroidApps_${this@PackageProject.pkg.filter { it.isLetterOrDigit() }}VCS")
 			name = "${this@PackageProject.pkg} Source"

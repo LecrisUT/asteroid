@@ -22,8 +22,8 @@ class DeviceProject(val device: String) : Project({
 
 	init {
 		val json = Settings.overrides?.optJSONObject("devices")?.optJSONObject(device)
-		meta = json?.optString("meta") ?: device
-		architecture = json?.optString("architecture") ?: "armv7vehf-neon"
+		meta = json?.optString("meta", null) ?: device
+		architecture = json?.optString("architecture", null) ?: "armv7vehf-neon"
 		buildImage = BuildImage(device, architecture, meta)
 		buildImageFromScratch = BuildImageFromScratch(device, architecture, meta)
 		buildType(buildImage)
@@ -50,7 +50,7 @@ open class BuildImage(device: String, architecture: String, meta: String = devic
 		CoreVCS.attachVCS(this, true)
 	}
 	params {
-		param("system.image.dev-suffix","")
+		param("system.image.dev-suffix", "")
 	}
 
 	steps {
@@ -83,7 +83,7 @@ open class BuildImage(device: String, architecture: String, meta: String = devic
 			""".trimIndent()
 
 			branchFilter = "+:pull/*"
-			buildParams.param("system.image.dev-suffix","-dev")
+			buildParams.param("system.image.dev-suffix", "-dev")
 		}
 	}
 
@@ -145,7 +145,7 @@ open class BuildImageFromScratch(device: String, architecture: String, meta: Str
 		CoreVCS.attachVCS(this, true)
 	}
 	params {
-		param("system.image.dev-suffix","-dev")
+		param("system.image.dev-suffix", "-dev")
 	}
 
 	steps {
