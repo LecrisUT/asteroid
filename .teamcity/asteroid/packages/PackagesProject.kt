@@ -9,7 +9,6 @@ import jetbrains.buildServer.configs.kotlin.v2019_2.buildFeatures.PullRequests
 import jetbrains.buildServer.configs.kotlin.v2019_2.buildFeatures.commitStatusPublisher
 import jetbrains.buildServer.configs.kotlin.v2019_2.buildFeatures.pullRequests
 import jetbrains.buildServer.configs.kotlin.v2019_2.sequential
-import jetbrains.buildServer.configs.kotlin.v2019_2.triggers.ScheduleTrigger
 import jetbrains.buildServer.configs.kotlin.v2019_2.triggers.schedule
 import jetbrains.buildServer.configs.kotlin.v2019_2.triggers.vcs
 
@@ -41,13 +40,16 @@ object BuildAll : BuildType({
 
 	vcs {
 		root(CoreVCS.Asteroid)
-		root(CoreVCS.MetaAsteroid)
+		root(CoreVCS.MetaAsteroid, "+:.=>src/meta-asteroid")
 	}
 
 	triggers {
 		schedule {
-			weekly{
-				dayOfWeek = ScheduleTrigger.DAY.Sunday
+//			schedulingPolicy = weekly{
+//				dayOfWeek = ScheduleTrigger.DAY.Sunday
+//			}
+			schedulingPolicy = daily{
+				hour = 12
 			}
 			triggerRules = """
 				+:root=${CoreVCS.MetaOpenEmbedded.id}:/**

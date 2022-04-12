@@ -162,13 +162,16 @@ object BuildAll : BuildType({
 
 	vcs {
 		root(CoreVCS.Asteroid)
-		root(CoreVCS.MetaAsteroid)
+		root(CoreVCS.MetaAsteroid, "+:.=>src/meta-asteroid")
 	}
 
 	triggers {
 		schedule {
-			weekly{
-				dayOfWeek = ScheduleTrigger.DAY.Sunday
+//			schedulingPolicy = weekly{
+//				dayOfWeek = ScheduleTrigger.DAY.Sunday
+//			}
+			schedulingPolicy = daily{
+				hour = 12
 			}
 			triggerRules = """
 				+:root=${CoreVCS.MetaOpenEmbedded.id}:/**
@@ -294,6 +297,7 @@ object BuildAllFromScratch : BuildType({
 	triggers {
 		schedule {
 			schedulingPolicy = weekly {
+				dayOfWeek = ScheduleTrigger.DAY.Sunday
 			}
 			branchFilter = "+:<default>"
 			triggerBuild = always()
