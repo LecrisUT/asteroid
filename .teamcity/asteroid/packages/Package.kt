@@ -56,7 +56,7 @@ open class BuildPackage(pkg: String, recipeVCS: GitVcsRoot, recipe: String = pkg
 
 	steps {
 		script {
-			initScript(this)
+			initScript(this, recipe, recipeVCS)
 		}
 		script {
 			name = "Build Package"

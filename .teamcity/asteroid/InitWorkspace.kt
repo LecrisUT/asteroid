@@ -2,6 +2,7 @@ package asteroid
 
 import jetbrains.buildServer.configs.kotlin.v2019_2.BuildType
 import jetbrains.buildServer.configs.kotlin.v2019_2.buildSteps.ScriptBuildStep
+import jetbrains.buildServer.configs.kotlin.v2019_2.vcs.GitVcsRoot
 
 object InitWorkspace : BuildType({
 	name = "Initialize workspace"
@@ -60,8 +61,90 @@ fun initScript(buildStep: ScriptBuildStep, withSstate: Boolean = true) {
 			  \${'$'}{SRCDIR}/meta-openembedded/meta-python \\
 			  \${'$'}{SRCDIR}/meta-openembedded/meta-filesystems \\
 			  \${'$'}{SRCDIR}/meta-smartwatch/meta-sturgeon \\
+			  \${'$'}{TOPDIR}/CI-layer \\
 			"
 		EOF
+		mkdir -p build/CI-layer/conf
+		cat > build/CI-layer/conf/layer.conf <<-EOF
+			BBPATH =. "\${'$'}{LAYERDIR}:"
+			BBFILES += "\${'$'}{LAYERDIR}/appends/*.bbappend"
+			BBFILE_COLLECTIONS += "CI-layer"
+			BBFILE_PATTERN_CI-layer = "^\${'$'}{LAYERDIR}/"
+			BBFILE_PATTERN_IGNORE_EMPTY_CI-layer = "1"
+			BBFILE_PRIORITY_CI-layer = "8"
+			LAYERSERIES_COMPAT_CI-layer = "\${'$'}{LAYERSERIES_COMPAT_core}"
+		EOF
+		
+		# Try to initialize OE environment
+		source ./src/oe-core/oe-init-build-env
+		""".trimIndent()
+}
+
+fun initScript(buildStep: ScriptBuildStep, recipe: String, recipeVCS: GitVcsRoot,  withSstate: Boolean = true) {
+	// TODO: Change the hardcoded sturgeon to generic
+	buildStep.name = "Prepare config files"
+	val sstateMirror: String = if (withSstate)
+		"""
+			SSTATE_MIRRORS ?= " \\
+			  file://.* %system.sstate.server.address%/sturgeon/sstate-cache/PATH;downloadfilename=PATH \\
+			  file://.* %system.sstate.server.address%/armv7vehf-neon/sstate-cache/PATH;downloadfilename=PATH \\
+			  file://.* %system.sstate.server.address%/allarch/sstate-cache/PATH;downloadfilename=PATH \\
+			  file://.* %system.sstate.server.address%/other-sstate/sstate-cache/PATH;downloadfilename=PATH \\
+			"
+		""".trimStart().trimEnd()
+	else
+		"""
+			SSTATE_MIRRORS ?= " \\
+			  file://.* %system.sstate.server.address%/other-sstate/sstate-cache/PATH;downloadfilename=PATH \\
+			"
+		""".trimStart().trimEnd()
+	buildStep.scriptContent = """
+		mkdir -p build/conf
+		cat > build/conf/local.conf <<-EOF
+			DISTRO = "asteroid"
+			MACHINE = "sturgeon"
+			PACKAGE_CLASSES = "package_ipk"
+			SRCDIR = "\${'$'}{@os.path.abspath(os.path.join("\${'$'}{TOPDIR}", "../src/"))}"
+			PREMIRRORS:prepend = " \\
+			  git://.*/.*/([^.]+).*   git://\${'$'}{SRCDIR}/\\1;protocol=file \\
+			"
+			$sstateMirror
+		EOF
+		cat > build/conf/bblayers.conf <<-EOF
+			BBPATH = "\${'$'}{TOPDIR}"
+			SRCDIR = "\${'$'}{@os.path.abspath(os.path.join("\${'$'}{TOPDIR}", "../src/"))}"
+			
+			BBLAYERS = " \\
+			  \${'$'}{SRCDIR}/meta-qt5 \\
+			  \${'$'}{SRCDIR}/oe-core/meta \\
+			  \${'$'}{SRCDIR}/meta-asteroid \\
+			  \${'$'}{SRCDIR}/meta-openembedded/meta-oe \\
+			  \${'$'}{SRCDIR}/meta-openembedded/meta-multimedia \\
+			  \${'$'}{SRCDIR}/meta-openembedded/meta-gnome \\
+			  \${'$'}{SRCDIR}/meta-openembedded/meta-networking \
+			  \${'$'}{SRCDIR}/meta-smartphone/meta-android \\
+			  \${'$'}{SRCDIR}/meta-openembedded/meta-python \\
+			  \${'$'}{SRCDIR}/meta-openembedded/meta-filesystems \\
+			  \${'$'}{SRCDIR}/meta-smartwatch/meta-sturgeon \\
+			  \${'$'}{TOPDIR}/CI-layer \\
+			"
+		EOF
+		mkdir -p build/CI-layer/conf
+		cat > build/CI-layer/conf/layer.conf <<-EOF
+			BBPATH =. "\${'$'}{LAYERDIR}:"
+			BBFILES += "\${'$'}{LAYERDIR}/appends/*.bbappend"
+			BBFILE_COLLECTIONS += "CI-layer"
+			BBFILE_PATTERN_CI-layer = "^\${'$'}{LAYERDIR}/"
+			BBFILE_PATTERN_IGNORE_EMPTY_CI-layer = "1"
+			BBFILE_PRIORITY_CI-layer = "8"
+			LAYERSERIES_COMPAT_CI-layer = "\${'$'}{LAYERSERIES_COMPAT_core}"
+		EOF
+		mkdir -p build/CI-layer/appends
+		cat > build/CI-layer/appends/$recipe.bbappend <<-EOF
+			SRCREV = %build.vcs.number.${recipeVCS.id}%
+			SRCBRANCH = %teamcity.build.vcs.branch.${recipeVCS.id}%
+		EOF
+		
 		
 		# Try to initialize OE environment
 		source ./src/oe-core/oe-init-build-env
@@ -119,7 +202,18 @@ fun initScript(
 			  \${'$'}{SRCDIR}/meta-openembedded/meta-python \\
 			  \${'$'}{SRCDIR}/meta-openembedded/meta-filesystems \\
 			  \${'$'}{SRCDIR}/meta-smartwatch/meta-$meta \\
+			  \${'$'}{TOPDIR}/CI-layer \\
 			"
+		EOF
+		mkdir -p build/CI-layer/conf
+		cat > build/CI-layer/conf/layer.conf <<-EOF
+			BBPATH =. "\${'$'}{LAYERDIR}:"
+			BBFILES += "\${'$'}{LAYERDIR}/appends/*.bbappend"
+			BBFILE_COLLECTIONS += "CI-layer"
+			BBFILE_PATTERN_CI-layer = "^\${'$'}{LAYERDIR}/"
+			BBFILE_PATTERN_IGNORE_EMPTY_CI-layer = "1"
+			BBFILE_PRIORITY_CI-layer = "8"
+			LAYERSERIES_COMPAT_CI-layer = "\${'$'}{LAYERSERIES_COMPAT_core}"
 		EOF
 		
 		# Try to initialize OE environment
