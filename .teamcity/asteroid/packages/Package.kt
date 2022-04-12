@@ -77,6 +77,7 @@ open class BuildPackage(pkg: String, recipeVCS: GitVcsRoot, recipe: String = pkg
 			""".trimStart().trimEnd() else ""
 			triggerRules = """
 				+:root=${CoreVCS.MetaAsteroid.id};comment=^(?!\[NoBuild\]:).+:**
+				-:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid-apps/**
 				-:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid/**
 				$coreAppTrigger
 				+:root=${recipeVCS.id};comment=^(?!\[NoBuild\]:).+:**
