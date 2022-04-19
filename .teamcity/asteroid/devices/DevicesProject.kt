@@ -161,7 +161,8 @@ object BuildAll : BuildType({
 	type = Type.DEPLOYMENT
 
 	vcs {
-		root(CoreVCS.Asteroid)
+		CoreVCS.attachVCS(this)
+		root(CoreVCS.Asteroid, "+:.=>asteroid")
 		root(CoreVCS.MetaAsteroid, "+:.=>src/meta-asteroid")
 	}
 
