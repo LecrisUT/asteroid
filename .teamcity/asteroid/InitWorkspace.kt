@@ -33,6 +33,8 @@ fun initScript(buildStep: ScriptBuildStep, withSstate: Boolean = true) {
 			  file://.* %system.sstate.server.address%/other-sstate/sstate-cache/PATH;downloadfilename=PATH \\
 			"
 		""".trimStart().trimEnd()
+	// TODO: Add overrides of all dependent recipes
+	val gitOverrides = ""
 	buildStep.scriptContent = """
 		mkdir -p build/conf
 		cat > build/conf/local.conf <<-EOF
@@ -56,23 +58,13 @@ fun initScript(buildStep: ScriptBuildStep, withSstate: Boolean = true) {
 			  \${'$'}{SRCDIR}/meta-openembedded/meta-oe \\
 			  \${'$'}{SRCDIR}/meta-openembedded/meta-multimedia \\
 			  \${'$'}{SRCDIR}/meta-openembedded/meta-gnome \\
-			  \${'$'}{SRCDIR}/meta-openembedded/meta-networking \
+			  \${'$'}{SRCDIR}/meta-openembedded/meta-networking \\
 			  \${'$'}{SRCDIR}/meta-smartphone/meta-android \\
 			  \${'$'}{SRCDIR}/meta-openembedded/meta-python \\
 			  \${'$'}{SRCDIR}/meta-openembedded/meta-filesystems \\
 			  \${'$'}{SRCDIR}/meta-smartwatch/meta-sturgeon \\
-			  \${'$'}{TOPDIR}/CI-layer \\
 			"
-		EOF
-		mkdir -p build/CI-layer/conf
-		cat > build/CI-layer/conf/layer.conf <<-EOF
-			BBPATH =. "\${'$'}{LAYERDIR}:"
-			BBFILES += "\${'$'}{LAYERDIR}/appends/*.bbappend"
-			BBFILE_COLLECTIONS += "CI-layer"
-			BBFILE_PATTERN_CI-layer = "^\${'$'}{LAYERDIR}/"
-			BBFILE_PATTERN_IGNORE_EMPTY_CI-layer = "1"
-			BBFILE_PRIORITY_CI-layer = "8"
-			LAYERSERIES_COMPAT_CI-layer = "\${'$'}{LAYERSERIES_COMPAT_core}"
+			$gitOverrides
 		EOF
 		
 		# Try to initialize OE environment
@@ -98,6 +90,10 @@ fun initScript(buildStep: ScriptBuildStep, recipe: String, recipeVCS: GitVcsRoot
 			  file://.* %system.sstate.server.address%/other-sstate/sstate-cache/PATH;downloadfilename=PATH \\
 			"
 		""".trimStart().trimEnd()
+	val gitOverrides = """
+		SRCREV:pn-${recipe} = "%build.vcs.number.${recipeVCS.id}%"
+		SRCBRANCH:pn-${recipe} = "%teamcity.build.vcs.branch.${recipeVCS.id}%"
+	""".trimStart().trimEnd()
 	buildStep.scriptContent = """
 		mkdir -p build/conf
 		cat > build/conf/local.conf <<-EOF
@@ -121,28 +117,13 @@ fun initScript(buildStep: ScriptBuildStep, recipe: String, recipeVCS: GitVcsRoot
 			  \${'$'}{SRCDIR}/meta-openembedded/meta-oe \\
 			  \${'$'}{SRCDIR}/meta-openembedded/meta-multimedia \\
 			  \${'$'}{SRCDIR}/meta-openembedded/meta-gnome \\
-			  \${'$'}{SRCDIR}/meta-openembedded/meta-networking \
+			  \${'$'}{SRCDIR}/meta-openembedded/meta-networking \\
 			  \${'$'}{SRCDIR}/meta-smartphone/meta-android \\
 			  \${'$'}{SRCDIR}/meta-openembedded/meta-python \\
 			  \${'$'}{SRCDIR}/meta-openembedded/meta-filesystems \\
 			  \${'$'}{SRCDIR}/meta-smartwatch/meta-sturgeon \\
-			  \${'$'}{TOPDIR}/CI-layer \\
 			"
-		EOF
-		mkdir -p build/CI-layer/conf
-		cat > build/CI-layer/conf/layer.conf <<-EOF
-			BBPATH =. "\${'$'}{LAYERDIR}:"
-			BBFILES += "\${'$'}{LAYERDIR}/appends/*.bbappend"
-			BBFILE_COLLECTIONS += "CI-layer"
-			BBFILE_PATTERN_CI-layer = "^\${'$'}{LAYERDIR}/"
-			BBFILE_PATTERN_IGNORE_EMPTY_CI-layer = "1"
-			BBFILE_PRIORITY_CI-layer = "8"
-			LAYERSERIES_COMPAT_CI-layer = "\${'$'}{LAYERSERIES_COMPAT_core}"
-		EOF
-		mkdir -p build/CI-layer/appends
-		cat > build/CI-layer/appends/$recipe.bbappend <<-EOF
-			SRCREV = %build.vcs.number.${recipeVCS.id}%
-			SRCBRANCH = %teamcity.build.vcs.branch.${recipeVCS.id}%
+			$gitOverrides
 		EOF
 		
 		
