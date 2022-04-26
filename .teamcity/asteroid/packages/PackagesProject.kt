@@ -72,8 +72,8 @@ object BuildAll : BuildType({
 		}
 		vcs {
 			triggerRules = """
-				+:root=${CoreVCS.Asteroid.id};comment=^(?!\[NoBuild\]:).+:/.teamcity/asteroid/*
-				+:root=${CoreVCS.Asteroid.id};comment=^(?!\[NoBuild\]:).+:/.teamcity/asteroid/packages/**
+				+:root=${CoreVCS.Asteroid.id};comment=^\[Rebuild\][:]:/.teamcity/asteroid/*
+				+:root=${CoreVCS.Asteroid.id};comment=^\[Rebuild\][:]:/.teamcity/asteroid/packages/**
 			""".trimIndent()
 
 			branchFilter = """
