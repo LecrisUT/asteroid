@@ -76,8 +76,8 @@ object BuildAll : BuildType({
 			watchChangesInDependencies = true
 			triggerRules = """
 				+:root=${CoreVCS.MetaAsteroid.id};comment=^(?!\[NoBuild\]:).+:/**
-				-:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid-apps/**
-				-:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid/**
+				-:root=${CoreVCS.MetaAsteroid.id};comment=^(?!\[NoBuild\]:).+:/recipes-asteroid-apps/**
+				-:root=${CoreVCS.MetaAsteroid.id};comment=^(?!\[NoBuild\]:).+:/recipes-asteroid/**
 			""".trimIndent()
 
 			branchFilter = """
