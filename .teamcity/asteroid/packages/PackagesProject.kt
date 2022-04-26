@@ -38,8 +38,8 @@ object BuildAll : BuildType({
 	description = "Build all packages"
 
 	vcs {
-		CoreVCS.attachVCS(this)
-		root(CoreVCS.Asteroid, "+:.=>asteroid")
+//		CoreVCS.attachVCS(this)
+//		root(CoreVCS.Asteroid, "+:.=>asteroid")
 		root(CoreVCS.MetaAsteroid, "+:.=>src/meta-asteroid")
 	}
 
