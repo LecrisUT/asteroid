@@ -71,7 +71,7 @@ open class BuildImage(device: String, architecture: String, meta: String = devic
 	triggers {
 		vcs {
 			triggerRules = """
-				+:root=${DevicesProject.vcs.id}:/meta-$meta/**
+				+:root=${DevicesProject.vcs.id};comment=^(?!\[NoBuild\]:).+:/meta-$meta/**
 			""".trimIndent()
 
 			branchFilter = "+:<default>"

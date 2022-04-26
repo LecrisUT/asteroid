@@ -38,16 +38,13 @@ object BuildAll : BuildType({
 	description = "Build all packages"
 
 	vcs {
-//		CoreVCS.attachVCS(this)
-//		root(CoreVCS.Asteroid, "+:.=>asteroid")
-		root(CoreVCS.MetaAsteroid, "+:.=>src/meta-asteroid")
+		CoreVCS.attachVCS(this)
+		root(CoreVCS.Asteroid, "+:.=>asteroid")
+//		root(CoreVCS.MetaAsteroid, "+:.=>src/meta-asteroid")
 	}
 
 	triggers {
 		schedule {
-//			schedulingPolicy = weekly{
-//				dayOfWeek = ScheduleTrigger.DAY.Sunday
-//			}
 			schedulingPolicy = daily{
 				hour = 12
 			}
@@ -62,9 +59,10 @@ object BuildAll : BuildType({
 		}
 		vcs {
 			triggerRules = """
-				+:root=${CoreVCS.MetaAsteroid.id};comment=^(?!\[NoBuild\]:).+:/**
+				+:root=${CoreVCS.MetaAsteroid.id}:/**
 				-:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid-apps/**
 				-:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid/**
+				-:root=${CoreVCS.MetaAsteroid.id};comment=^\[NoBuild\][:]:/**
 			""".trimIndent()
 
 			branchFilter = """
@@ -74,8 +72,8 @@ object BuildAll : BuildType({
 		}
 		vcs {
 			triggerRules = """
-				+:root=${CoreVCS.Asteroid.id}:/.teamcity/*
-				+:root=${CoreVCS.Asteroid.id}:/.teamcity/packages/**
+				+:root=${CoreVCS.Asteroid.id};comment=^(?!\[NoBuild\]:).+:/.teamcity/asteroid/*
+				+:root=${CoreVCS.Asteroid.id};comment=^(?!\[NoBuild\]:).+:/.teamcity/asteroid/packages/**
 			""".trimIndent()
 
 			branchFilter = """
