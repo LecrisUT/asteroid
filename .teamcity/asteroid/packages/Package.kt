@@ -72,14 +72,22 @@ open class BuildPackage(pkg: String, recipeVCS: GitVcsRoot, recipe: String = pkg
 	triggers {
 		vcs {
 			val coreAppTrigger = if (coreApp) """
-				+:root=${CoreVCS.MetaAsteroid.id};comment=^(?!\[NoBuild\]:).+:/recipes-asteroid/$pkg/**
-				+:root=${CoreVCS.MetaAsteroid.id};comment=^\[$pkg\][:]:**
+				+:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid/$pkg/**
 			""".trimStart().trimEnd() else ""
 			triggerRules = """
-				+:root=${CoreVCS.MetaAsteroid.id};comment=^(?!\[NoBuild\]:).+:**
+				+:root=${CoreVCS.MetaAsteroid.id}:/**
 				-:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid-apps/**
 				-:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid/**
 				$coreAppTrigger
+			""".trimIndent()
+
+			branchFilter = """
+				+:<default>
+				+:pull/*
+			""".trimIndent()
+		}
+		vcs {
+			triggerRules = """
 				+:root=${recipeVCS.id};comment=^(?!\[NoBuild\]:).+:**
 			""".trimIndent()
 

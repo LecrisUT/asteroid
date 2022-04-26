@@ -75,7 +75,7 @@ object BuildAll : BuildType({
 		vcs {
 			watchChangesInDependencies = true
 			triggerRules = """
-				+:root=${CoreVCS.MetaAsteroid.id};comment=^(?!\[NoBuild\]:).+:/**
+				+:root=${CoreVCS.MetaAsteroid.id}:/**
 				-:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid-apps/**
 				-:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid/**
 			""".trimIndent()
