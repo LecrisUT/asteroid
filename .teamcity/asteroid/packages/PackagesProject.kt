@@ -65,6 +65,7 @@ object BuildAll : BuildType({
 				+:root=${CoreVCS.MetaAsteroid.id}:/**
 				-:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid-apps/**
 				-:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid/**
+				-:root=${CoreVCS.MetaAsteroid.id};comment=^\[NoBuild\][:]:/**
 			""".trimIndent()
 
 			branchFilter = """
