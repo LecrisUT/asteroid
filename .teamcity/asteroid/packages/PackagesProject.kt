@@ -1,7 +1,6 @@
 package asteroid.packages
 
 import asteroid.*
-import asteroid.devices.DevicesProject
 import jetbrains.buildServer.configs.kotlin.v2019_2.BuildType
 import jetbrains.buildServer.configs.kotlin.v2019_2.FailureAction
 import jetbrains.buildServer.configs.kotlin.v2019_2.Project
@@ -62,23 +61,12 @@ object BuildAll : BuildType({
 			branchFilter = "+:<default>"
 		}
 		vcs {
-			enabled = false
 			watchChangesInDependencies = true
 			triggerRules = """
-				+:/**
-				-:root=${DevicesProject.vcs.id}:/**
-				-:root=${CoreVCS.MetaAsteroid.id}:/**
-			""".trimIndent()
-
-			branchFilter = "+:<default>"
-		}
-		vcs {
-			watchChangesInDependencies = true
-			triggerRules = """
-				+:root=${CoreVCS.MetaAsteroid.id}:/**
+				+:root=${CoreVCS.MetaAsteroid.id}:.
 				-:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid-apps/**
 				-:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid/**
-				-:root=${CoreVCS.MetaAsteroid.id};comment=^\[NoBuild\][:]:/**
+				-:root=${CoreVCS.MetaAsteroid.id};comment=^\[NoBuild\][:]:.
 			""".trimIndent()
 
 			branchFilter = """

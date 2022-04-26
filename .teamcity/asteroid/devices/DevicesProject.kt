@@ -184,17 +184,6 @@ object BuildAll : BuildType({
 			branchFilter = "+:<default>"
 		}
 		vcs {
-			enabled = false
-			watchChangesInDependencies = true
-			triggerRules = """
-				+:/**
-				-:root=${DevicesProject.vcs.id}:/**
-				-:root=${CoreVCS.MetaAsteroid.id}:/**
-			""".trimIndent()
-
-			branchFilter = "+:<default>"
-		}
-		vcs {
 			watchChangesInDependencies = true
 			triggerRules = """
 				+:root=${CoreVCS.MetaAsteroid.id}:/**
