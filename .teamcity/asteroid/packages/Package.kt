@@ -73,7 +73,8 @@ open class BuildPackage(pkg: String, recipeVCS: GitVcsRoot, recipe: String = pkg
 		if (coreApp)
 			vcs {
 				triggerRules = """
-					+:root=${CoreVCS.MetaAsteroid.id};comment=^(?!\[NoBuild\]:).+:/recipes-asteroid/$pkg/**
+					+:root=${CoreVCS.MetaAsteroid.id}:/recipes-asteroid/$pkg/**
+					-:root=${CoreVCS.MetaAsteroid.id};comment=^\[NoBuild\][:]:/recipes-asteroid/$pkg/**
 				""".trimIndent()
 
 				branchFilter = """
@@ -83,7 +84,8 @@ open class BuildPackage(pkg: String, recipeVCS: GitVcsRoot, recipe: String = pkg
 			}
 		vcs {
 			triggerRules = """
-				+:root=${recipeVCS.id};comment=^(?!\[NoBuild\]:).+:/**
+				+:root=${recipeVCS.id}:/**
+				-:root=${recipeVCS.id};comment=^\[NoBuild\][:]:/**
 			""".trimIndent()
 
 			branchFilter = """
